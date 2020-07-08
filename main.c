@@ -132,7 +132,7 @@ void decryption(char* _str_param) {
         char* saveToken = NULL;
         register int num = (int)strtol(buf_binary, &saveToken, 2); /* Convert from binary */
 
-        register char buf[2] = { (char)num, '\0' }; /* Binding buffer for conversion */
+        char buf[2] = { (char)num, '\0' }; /* Binding buffer for conversion */
 
         strncat(_str_param, buf, 2);
 
