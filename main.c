@@ -2,20 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define FOR_READ_STRING(x) do{               \
-    scanf("%99[^\\n]", (x));                 \
-                                             \
-    register int size = (int)strlen(string); \
-    REVERSE(string, size);                   \
-    register int _expr = size - 1;           \
-    string[_expr] = '\0';                    \
-    REVERSE(string, _expr);                  \
-    _expr -= 1;                              \
-                                             \
-    if (string[_expr] == '\n')               \
-        string[_expr] = '\0';                \
-}while(0)
-
 #define SWAP(_first, _second) do{       \
     register char _temp = *(_second);   \
     *(_second) = *(_first);             \
@@ -138,34 +124,53 @@ void decryption(char* _str_param) {
 
         ++i;
     }
-
 }
 
-int main(void) {
-    unsigned char count = 0U;
+void initArgs(const int __argc_param, const char** __argv_param) {
+    const register char usage[166] = "\n"
+        "usage: cript <option>\n"
+        " Option              Description\n"
+        " -e [string]         encrypting string\n"
+        " -d [string]         decrypting string\n"
+        " -h                  this page";
+    register char* string = NULL;
+    register unsigned char result = 0;
 
-    scanf("%c", &count);
-
-    char string[600] = { 0 };
-
-    if ((count == 'e') || (count == 'd'))
-        FOR_READ_STRING(string);
-
-    switch (count) {
+    if (__argc_param != 1) {
+        switch (__argv_param[1][1]) {
         case 'e':
-            encryption(string);
-            printf("%s\n", string);
-            printf("End\n");
+            result = 1;
+
+            if (__argv_param[2] != NULL) {    
+                string = (char *)__argv_param[2];
+                encryption(string);
+                printf("%s", string);
+
+                result = 0;
+            }
             break;
         case 'd':
-            decryption(string);
-            printf("%s\n", string);
-            printf("End\n");
+            result = 1;
+
+            if (__argv_param[2] != NULL) {
+                string = (char *)__argv_param[2];
+                decryption(string);
+                printf("%s", string);
+
+                result = 0;
+            }
             break;
         default:
-            printf("Unknown command!\ne - encrypt\nd - decrypt");
+            result = 1;
             break;
-	}
+        }
+    }
 
+    if ((__argc_param == 1) || result)
+        printf("%s", usage);
+}
+
+int main(const int argc, const char** argv) {
+    initArgs(argc, argv);
 	return 0;
 }
