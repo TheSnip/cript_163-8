@@ -91,7 +91,7 @@ void encryption(char* _str_param) {
 /* Decrypt data */
 void decryption(char* _str_param) {
     register int size = (int)strlen(_str_param) + 1;
-    
+
     register char* _str_copy = (char*)alloca(size);
 
     strncpy(_str_copy, _str_param, size);
@@ -141,7 +141,7 @@ void initArgs(const int __argc_param, const char** __argv_param) {
         case 'e':
             result = 1;
 
-            if (__argv_param[2] != NULL) {    
+            if (__argv_param[2] != NULL) {
                 string = (char *)__argv_param[2];
                 encryption(string);
                 printf("%s", string);
