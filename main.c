@@ -172,5 +172,5 @@ void initArgs(const int __argc_param, const char** __argv_param) {
 
 int main(const int argc, const char** argv) {
     initArgs(argc, argv);
-	return 0;
+    return 0;
 }
