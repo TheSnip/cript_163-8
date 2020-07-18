@@ -47,7 +47,7 @@ void itoa(const int _num_param, char* _str_param, const int _base_param) {
 
 /* Encrypt data */
 void encryption(char* _str_param) {
-    const char alphabet[26] = "abcdefghijklmnopqrstuvwxyz";
+    const char* alphabet = "abcdefghijklmnopqrstuvwxyz";
 
     register int size = (int)strlen(_str_param) + 1;
 
@@ -127,12 +127,12 @@ void decryption(char* _str_param) {
 }
 
 void initArgs(const int __argc_param, const char** __argv_param) {
-    const register char usage[166] = "\n"
-        "usage: cript <option>\n"
-        " Option              Description\n"
-        " -e [string]         encrypting string\n"
-        " -d [string]         decrypting string\n"
-        " -h                  this page";
+    const char usage[166] = 
+	"Usage: cript [option] <string>\n"
+        " Option\n"
+        " -e        encrypting string\n"
+        " -d        decrypting string\n"
+        " -h        this page";
     register char* string = NULL;
     register unsigned char result = 0;
 
