@@ -1,11 +1,17 @@
 CC := gcc
-CFLAGS := -ffast-math -Wall -Wextra
-all: main
+CFLAGS := -ffast-math
+all: crypt
 
-main: %: %.c
+crypt: %: %.c
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-	rm main
-run:
-	./main
+	rm crypt
+test:
+	./crypt && echo "\n"
+	./crypt -e && echo "\n"
+	./crypt -e test && echo "\n"
+	./crypt -d BBBABAABBAABABBBBAABBBBBABAA
+install:
+	cp crypt /usr/local/bin/crypt
+	chmod 755 /usr/local/bin/crypt

@@ -2,6 +2,30 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ERROR    \
+    result = 0U; \
+    printf("Error: %s invalid", __argv_param[1]);
+
+#define FOR_ENCR do{                       \
+    if (__argv_param[2] != NULL) {         \
+        string = (char *)__argv_param[2];  \
+        encryption(string);                \
+        printf("%s", string);              \
+                                           \
+        result = 0U;                       \
+    }                                      \
+}while(0)
+
+#define FOR_DECR do{                       \
+    if (__argv_param[2] != NULL) {         \
+        string = (char *)__argv_param[2];  \
+        decryption(string);                \
+        printf("%s", string);              \
+                                           \
+        result = 0U;                       \
+    }                                      \
+}while(0)
+
 #define SWAP(_first, _second) do{       \
     register char _temp = *(_second);   \
     *(_second) = *(_first);             \
@@ -127,42 +151,51 @@ void decryption(char* _str_param) {
 }
 
 void initArgs(const int __argc_param, const char** __argv_param) {
-    const char usage[166] = 
-	"Usage: cript [option] <string>\n"
-        " Option\n"
-        " -e        encrypting string\n"
-        " -d        decrypting string\n"
-        " -h        this page";
+    const char usage[166] =
+	    "Usage: crypt [option] <string>\n"
+        "Option\n"
+        " -d, --decrypt         decrypting text\n"
+        " -e, --encrypt         encrypting text\n"
+        " -h, --help            This help text";
     register char* string = NULL;
-    register unsigned char result = 0;
+    register unsigned char result = 1U;
 
-    if (__argc_param != 1) {
-        switch (__argv_param[1][1]) {
-        case 'e':
-            result = 1;
-
-            if (__argv_param[2] != NULL) {
-                string = (char *)__argv_param[2];
-                encryption(string);
-                printf("%s", string);
-
-                result = 0;
+    if (__argc_param > 1) {
+        register unsigned int size = (unsigned int)strlen(__argv_param[1]);
+        if (size < 3) {
+            switch (__argv_param[1][1]) {
+            case 'e':
+                FOR_ENCR;
+                break;
+            case 'd':
+                FOR_DECR;
+                break;
+            case 'h':
+                break;
+            default:
+                ERROR;
+                break;
             }
-            break;
-        case 'd':
-            result = 1;
+        } else {
+            char* buf = (char*)alloca(size - 1U);
+            strncpy(buf, "", 1);
 
-            if (__argv_param[2] != NULL) {
-                string = (char *)__argv_param[2];
-                decryption(string);
-                printf("%s", string);
-
-                result = 0;
+            register unsigned int i = 2U;
+            while (i < size) {
+                char buf_char[2] = { __argv_param[1][i], '\0' };
+                strncat(buf, buf_char, 2);
+                ++i;
             }
-            break;
-        default:
-            result = 1;
-            break;
+
+            if (strncmp(buf, "encrypt", size - 1U) == 0) {
+                FOR_ENCR;
+            } else if (strncmp(buf, "decrypt", size - 1U) == 0) {
+                FOR_DECR;
+            } else if (strncmp(buf, "help", size - 1U) == 0) {
+                result = 1U;
+            } else {
+                ERROR;
+            }
         }
     }
 
