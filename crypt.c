@@ -26,10 +26,10 @@
     }                                      \
 }while(0)
 
-#define SWAP(_first, _second) do{       \
-    register char _temp = *(_second);   \
-    *(_second) = *(_first);             \
-    *(_first) = _temp;                  \
+#define SWAP(_first, _second) do{ \
+    *(_first)  ^= *(_second);     \
+    *(_second) ^= *(_first);      \
+    *(_first)  ^= *(_second);     \
 }while(0)
 
 /* Transform functions */
@@ -44,7 +44,7 @@
     }                                       \
 }while(0)
 
-void itoa(const int _num_param, char* _str_param, const int _base_param) {
+static void itoa(const int _num_param, char* _str_param, const int _base_param) {
     register int num = _num_param;
 
     /* Process individual digits */
@@ -70,31 +70,31 @@ void itoa(const int _num_param, char* _str_param, const int _base_param) {
 
 
 /* Encrypt data */
-void encryption(char* _str_param) {
+static void encryption(char* _str_param) {
     const char* alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-    register int size = (int)strlen(_str_param) + 1;
+    register const unsigned size = (unsigned)strlen(_str_param) + 1U;
 
     register char* _str_copy = (char*)alloca(size);
 
     strncpy(_str_copy, _str_param, size);
     strncpy(_str_param, "", 1);
 
-    register int i = 0;
+    register unsigned i = 0U;
     while (i < size) {
-        register int j = 0;
-        while (j < 26) {
+        register unsigned j = 0U;
+        while (j < 26U) {
             if (_str_copy[i] == alphabet[j]) {
                 /* Optimization */
-                j = (int)alphabet[j]; /* Convert to number in alphabet */
+                j = (unsigned)alphabet[j]; /* Convert to number in alphabet */
 
                 char buf[8]; /* Binding buffer */
 
                 itoa(j, buf, 2); /* Convert to binary */
 
                 /* Convert to Bacon */
-                register int k = 0;
-                while (k < 7) {
+                register unsigned k = 0U;
+                while (k < 7U) {
                     if (buf[k] == '1')
                         buf[k] = 'B';
                     else if (buf[k] == '0')
@@ -113,23 +113,23 @@ void encryption(char* _str_param) {
 }
 
 /* Decrypt data */
-void decryption(char* _str_param) {
-    register int size = (int)strlen(_str_param) + 1;
+static void decryption(char* _str_param) {
+    register const unsigned size = (unsigned)strlen(_str_param) + 1U;
 
     register char* _str_copy = (char*)alloca(size);
 
     strncpy(_str_copy, _str_param, size);
     strncpy(_str_param, "", 1);
 
-    register int i = 0;
-    register int length = size / 7;
+    register unsigned i = 0U;
+    register const unsigned length = size / 7U;
     while (i < length) {
         char buf_binary[8]; /* Binding buffer for conversion */
 
         /* Convert from Bacon */
-        register int j = 0;
-        while (j < 7) {
-            register int index = i * 7 + j;
+        register unsigned j = 0U;
+        while (j < 7U) {
+            register unsigned index = i * 7U + j;
 
             if ((_str_copy[index] == 'A') || (_str_copy[index] == 'a'))
                 buf_binary[j] = '0';
@@ -140,7 +140,7 @@ void decryption(char* _str_param) {
         }
 
         char* saveToken = NULL;
-        register int num = (int)strtol(buf_binary, &saveToken, 2); /* Convert from binary */
+        register const int num = (int)strtol(buf_binary, &saveToken, 2); /* Convert from binary */
 
         char buf[2] = { (char)num, '\0' }; /* Binding buffer for conversion */
 
@@ -161,8 +161,8 @@ void initArgs(const int __argc_param, const char** __argv_param) {
     register unsigned char result = 1U;
 
     if (__argc_param > 1) {
-        register unsigned int size = (unsigned int)strlen(__argv_param[1]);
-        if (size < 3) {
+        register const unsigned size = (unsigned)strlen(__argv_param[1]);
+        if (size < 3U) {
             switch (__argv_param[1][1]) {
             case 'e':
                 FOR_ENCR;
@@ -180,7 +180,7 @@ void initArgs(const int __argc_param, const char** __argv_param) {
             char* buf = (char*)alloca(size - 1U);
             strncpy(buf, "", 1);
 
-            register unsigned int i = 2U;
+            register unsigned i = 2U;
             while (i < size) {
                 char buf_char[2] = { __argv_param[1][i], '\0' };
                 strncat(buf, buf_char, 2);
